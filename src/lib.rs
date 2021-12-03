@@ -4,7 +4,6 @@ pub mod prelude;
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
     use cmd_lib::run_cmd;
     use crate::prelude::*;
 
@@ -33,6 +32,22 @@ mod tests {
             git checkout -b branch1;
             git shortlog;
         ).unwrap();
+
+        // Make some assertion in the current test dir
+    }
+
+    #[temp_test]
+    fn a_dummy_test_with_return_type() -> Result<&'static str, &'static str> {
+        let current_dir = std::env::current_dir().unwrap();
+        run_cmd! (
+            info "Initializing test repo in $current_dir";
+            git init;
+            git commit -m "a commit" --allow-empty;
+            git checkout -b branch1;
+            git shortlog;
+        ).unwrap();
+
+        Ok("ok")
 
         // Make some assertion in the current test dir
     }

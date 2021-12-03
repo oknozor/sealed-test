@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use syn::{parse, ItemFn, Stmt, parse_quote};
-use quote::quote;
+use quote::{quote};
 
 #[proc_macro_attribute]
 pub fn temp_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
@@ -13,16 +13,18 @@ pub fn temp_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     let mut input = parse::<ItemFn>(item).expect("Expected a function");
+
     let mut statements = vec![tmpdir, current_dir];
     statements.extend(input.block.stmts.clone());
 
     input.block.stmts = statements;
 
-
-    TokenStream::from( quote! {
+    let expanded = quote! {
         rusty_fork_test! {
             #[test]
             #input
         }
-    })
+    };
+
+    TokenStream::from(expanded)
 }

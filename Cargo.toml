@@ -5,7 +5,7 @@ edition = "2021"
 
 
 [dependencies]
-rusty-fork = "0.3.0"
+rusty-fork = { path = "../rusty-fork" }
 tempfile = "^3"
 temp_test_derive = { path = "derive"}
 
