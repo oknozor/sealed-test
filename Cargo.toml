@@ -1,13 +1,22 @@
 [package]
-name = "temp_test"
+name = "sealed_test"
 version = "0.1.0"
 edition = "2021"
+authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/oknozor/sealed-test"
+documentation = "https://docs.rs/sealed-test"
+description = """
+A procmacro attribute to run your test in an isolated environment
+"""
+
 
 
 [dependencies]
-rusty-fork = { path = "../rusty-fork" }
+rusty-forkfork = "0.3.0"
 tempfile = "^3"
-temp_test_derive = { path = "derive"}
+sealed_test_derive = { path = "derive"}
 
 [dev-dependencies]
 cmd_lib = "1.3.0"

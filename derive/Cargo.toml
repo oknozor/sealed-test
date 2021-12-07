@@ -1,8 +1,15 @@
 [package]
-name = "temp_test_derive"
+name = "sealed_test_derive"
 version = "0.1.0"
 edition = "2021"
-
+authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/oknozor/sealed-test"
+documentation = "https://docs.rs/sealed-test"
+description = """
+A procmacro attribute to run your test in an isolated environment
+"""
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]

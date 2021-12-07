@@ -1,9 +1,9 @@
 use proc_macro::TokenStream;
-use syn::{parse, ItemFn, Stmt, parse_quote};
-use quote::{quote};
+use quote::quote;
+use syn::{parse, parse_quote, ItemFn, Stmt};
 
 #[proc_macro_attribute]
-pub fn temp_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn sealed_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let tmpdir: Stmt = parse_quote! {
         let temp_dir = tempfile::TempDir::new().unwrap();
     };
