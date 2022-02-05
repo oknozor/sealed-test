@@ -162,4 +162,12 @@ mod tests {
         assert_eq!(var, "bar");
         Ok(())
     }
+
+    #[sealed_test]
+    #[should_panic]
+    fn question_mark_unwrapping_works() -> Result<(), &'static str> {
+        let err = Err("Oh no");
+        let _err = err?;
+        Ok(())
+    }
 }

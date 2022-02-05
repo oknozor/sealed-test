@@ -1,6 +1,6 @@
 [package]
 name = "sealed_test"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
 readme = "README.md"
@@ -14,7 +14,7 @@ A procmacro attribute to run your test in an isolated environment
 
 
 [dependencies]
-rusty-forkfork = "0.3.0"
+rusty-forkfork = "0.4.0"
 tempfile = "^3"
 sealed_test_derive = "0.1.0"
 
