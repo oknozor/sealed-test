@@ -4,7 +4,7 @@ This crate expose the `#[sealed_test]` macro attribute to run your test in an is
 
 It provides the following :
 - an isolated process using [rusty-fork](https://crates.io/crates/two-rusty-forks) and
-- a temporary work dir [tempfile](https://crates.io/crates/tempfile).
+- a temporary worzk dir [tempfile](https://crates.io/crates/tempfile).
 
 **Caution:** `using #[sealed_test]` instead of `#[test]` will create a temporary file
 and set it to be the test current directory but, nothing stops you from changing that directory

@@ -16,5 +16,5 @@ A procmacro attribute to run your test in an isolated environment
 proc-macro = true
 
 [dependencies]
-syn = {version = "1.0.82", features = ["full"] }
+syn = {version = "1.0.82", features = ["full", "extra-traits"] }
 quote = "1.0.10"

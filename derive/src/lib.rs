@@ -1,30 +1,36 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse, parse_quote, ItemFn, Stmt};
+use syn::{ItemFn, parse, parse_macro_input};
+use attributes::SealedTestAttributes;
+use crate::gen::SealedTest;
+
+mod gen;
+mod attributes;
 
 #[proc_macro_attribute]
-pub fn sealed_test(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    let tmpdir: Stmt = parse_quote! {
-        let temp_dir = tempfile::TempDir::new().unwrap();
-    };
+pub fn sealed_test(attr: TokenStream, item: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(attr as SealedTestAttributes);
 
-    let current_dir = parse_quote! {
-            std::env::set_current_dir(&temp_dir).unwrap();
-    };
+    let mut input_fn = parse::<ItemFn>(item).expect("Expected a function");
 
-    let mut input = parse::<ItemFn>(item).expect("Expected a function");
+    let test_fn = SealedTest::new()
+        .with_files(args.files)
+        .with_env(args.env)
+        .with_expr(args.before)
+        .with_test(input_fn.block.stmts.clone())
+        .with_expr(args.after)
+        .build();
 
-    let mut statements = vec![tmpdir, current_dir];
-    statements.extend(input.block.stmts.clone());
+    input_fn.block.stmts = test_fn;
 
-    input.block.stmts = statements;
 
-    let expanded = quote! {
+    let augmented_test = quote! {
         rusty_fork_test! {
             #[test]
-            #input
+            #input_fn
+
         }
     };
 
-    TokenStream::from(expanded)
+    TokenStream::from(augmented_test)
 }
