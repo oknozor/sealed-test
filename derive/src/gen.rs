@@ -1,6 +1,7 @@
-use std::path::PathBuf;
-use syn::{Stmt, parse_quote, Expr};
 use crate::attributes::EnvVar;
+use std::path::PathBuf;
+use syn::__private::TokenStream2;
+use syn::{parse_quote, Expr, Stmt};
 
 pub struct SealedTest {
     stmt: Vec<Stmt>,
@@ -13,7 +14,7 @@ impl SealedTest {
                 let temp_dir = tempfile::TempDir::new().unwrap();
                 std::env::set_current_dir(&temp_dir).unwrap();
                 let crate_dir: String = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-            }
+            },
         }
     }
 
@@ -21,11 +22,19 @@ impl SealedTest {
         self.stmt
     }
 
-
     pub fn with_expr(mut self, expr: Option<Expr>) -> Self {
         if let Some(expr) = expr {
             self.stmt.push(parse_quote!(
                 #expr;
+            ));
+        }
+        self
+    }
+
+    pub fn with_cmd_before(mut self, expr: Option<TokenStream2>) -> Self {
+        if let Some(expr) = expr {
+            self.stmt.push(parse_quote!(
+                cmd_lib::run_cmd!{#expr}.expect("Failed to run cmd");
             ));
         }
         self
@@ -39,10 +48,7 @@ impl SealedTest {
     pub fn with_files(mut self, files: Vec<String>) -> Self {
         for file in files {
             let target = PathBuf::from(file.clone());
-            let target = target.file_name()
-                .unwrap()
-                .to_str()
-                .unwrap();
+            let target = target.file_name().unwrap().to_str().unwrap();
 
             self.stmt.push(parse_quote!(
             {

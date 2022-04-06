@@ -18,6 +18,4 @@ rusty-forkfork = "0.4.0"
 tempfile = "^3"
 fs_extra = "1.2.0"
 sealed_test_derive = { path = "derive" }
-
-[dev-dependencies]
 cmd_lib = "1.3.0"
