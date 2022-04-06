@@ -1,10 +1,17 @@
-use syn::{parse::{Parse, ParseStream}, bracketed, Expr, LitStr, Token, parenthesized};
+use syn::__private::TokenStream2;
+use syn::{
+    braced, bracketed, parenthesized,
+    parse::{Parse, ParseStream},
+    Expr, LitStr, Token,
+};
 
 pub struct SealedTestAttributes {
     pub files: Vec<String>,
     pub env: Vec<EnvVar>,
     pub before: Option<Expr>,
     pub after: Option<Expr>,
+    pub cmd_before: Option<TokenStream2>,
+    pub cmd_after: Option<TokenStream2>,
 }
 
 pub struct EnvVar {
@@ -19,10 +26,7 @@ impl Parse for EnvVar {
         let name = content.parse::<LitStr>()?.value();
         let _ = content.parse::<Token!(,)>()?;
         let value = content.parse::<LitStr>()?.value();
-        Ok(Self {
-            name,
-            value,
-        })
+        Ok(Self { name, value })
     }
 }
 
@@ -33,6 +37,8 @@ impl Parse for SealedTestAttributes {
             env: vec![],
             before: None,
             after: None,
+            cmd_before: None,
+            cmd_after: None,
         };
 
         while let Ok(ident) = input.parse::<syn::Ident>() {
@@ -43,6 +49,8 @@ impl Parse for SealedTestAttributes {
                 "env" => attributes.env = Self::parse_env(input)?,
                 "before" => attributes.before = Some(input.parse::<Expr>()?),
                 "after" => attributes.after = Some(input.parse::<Expr>()?),
+                "cmd_before" => attributes.cmd_before = Some(Self::parse_cmd(input)?),
+                "cmd_after" => attributes.cmd_after = Some(Self::parse_cmd(input)?),
                 other => panic!(
                     "unexpected attribute {}, use 'files', 'env', 'setup' or 'teardown'",
                     other
@@ -64,7 +72,6 @@ impl SealedTestAttributes {
         bracketed!(content in input);
 
         let mut files = vec![];
-
 
         while let Ok(file) = content.parse::<LitStr>() {
             files.push(file.value());
@@ -94,5 +101,12 @@ impl SealedTestAttributes {
         }
 
         Ok(env_vars)
+    }
+
+    fn parse_cmd(input: ParseStream) -> syn::Result<TokenStream2> {
+        let content;
+        braced!(content in input);
+        let cmds = content.parse::<TokenStream2>()?;
+        Ok(cmds)
     }
 }

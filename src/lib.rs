@@ -9,6 +9,7 @@
 //!   - `before`/`after`: teardown and setup functions for your tests.
 //!   - `env`: set environment variables in the test process.
 //!   - `files`: copy files from your crate directory to the test temporary directory.
+//!   - `cmd_before`/`cmd_after`: setup and tear down using shell-script like tasks provided by the [cmd-lib](https://docs.rs/cmd_lib/1.3.0/cmd_lib/index.html) crate.
 //!
 //! **Caution:** using `#[sealed_test]` instead of `#[test]` will create a temporary file
 //! and set it to be the test current directory but, nothing stops you from changing that directory
@@ -116,9 +117,11 @@
 //!
 //! **setup and teardown:**
 //!
-//! Use `before` and `after` attributes to run some code around the test execution.
-//! This can be useful to avoid repetition.
+//! Sealed test provides two kinds of setup and teardown attribute :
+//! - `before` and `after`: to run a expression around your tests, typically a function, for instance `setup = setup_function()`.
+//! - `cmd_before` and `cmd_after` to run a  shell-script like tasks, typically a function, see the examples below.
 //!
+//! `before and after`
 //! ```rust
 //! # fn main() {
 //!
@@ -137,6 +140,24 @@
 //!     println!("Hello from teardown")
 //! }
 //! # }
+//!```
+//! `cmd_before` and `cmd_after`:
+//!
+//! ```rust
+//! # fn main() {
+//! #[sealed_test(
+//!      cmd_before = {
+//!          git init;
+//!          git commit --allow-empty -m "first commit";
+//!      },
+//!      cmd_after = {
+//!          git --no-pager log;
+//!      },
+//!  )]
+//!  fn git_cmd_setup_and_tear_down() {
+//!      assert!(PathBuf::from(".git").exists());
+//!  }
+//! # }
 
 extern crate sealed_test_derive;
 
@@ -144,9 +165,9 @@ pub mod prelude;
 
 #[cfg(test)]
 mod tests {
-    use std::env;
     use crate::prelude::*;
     use cmd_lib::run_cmd;
+    use std::env;
     use std::env::VarError;
     use std::path::PathBuf;
     use std::time::Duration;
@@ -290,5 +311,33 @@ mod tests {
 
     fn teardown() {
         println!("I run after the test");
+    }
+
+    #[sealed_test(
+        cmd_before = {
+            echo "Hello from shell test setup!";
+            ls -larth;
+        },
+        before = setup(),
+        env = [ ("HOME", "la maison") ],
+        files = [ "tests/bar" ],
+    )]
+    fn should_run_cmd() {
+        let home = env::var("HOME").expect("Failed to get $HOME");
+        assert_eq!(home, "la maison");
+        assert!(PathBuf::from("bar").exists());
+    }
+
+    #[sealed_test(
+        cmd_before = {
+            git init;
+            git commit --allow-empty -m "first commit";
+        },
+        cmd_after = {
+            git --no-pager log;
+        },
+    )]
+    fn should_run_cmd_after() {
+        assert!(PathBuf::from(".git").exists());
     }
 }
