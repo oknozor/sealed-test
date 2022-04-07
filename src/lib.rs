@@ -1,15 +1,15 @@
 //! ## Sealed test
 //!
-//! This crate expose the `#[sealed_test]` macro attribute to run your tests in an isolated environment.
+//! This crate exposes the `#[sealed_test]` macro attribute to run your tests in an isolated environment.
 //!
 //! It provides the following :
 //! - an isolated process using [rusty-fork](https://crates.io/crates/two-rusty-forks)
 //! - a temporary work dir with [tempfile](https://crates.io/crates/tempfile).
 //! - a set of handy attributes to configure your tests including:
-//!   - `before`/`after`: teardown and setup functions for your tests.
+//!   - `before`/`after`: setup and teardown functions for your tests.
 //!   - `env`: set environment variables in the test process.
 //!   - `files`: copy files from your crate directory to the test temporary directory.
-//!   - `cmd_before`/`cmd_after`: setup and tear down using shell-script like tasks provided by the [cmd-lib](https://docs.rs/cmd_lib/1.3.0/cmd_lib/index.html) crate.
+//!   - `cmd_before`/`cmd_after`: setup and teardown using shell-script like tasks provided by the [cmd-lib](https://docs.rs/cmd_lib/1.3.0/cmd_lib/index.html) crate.
 //!
 //! **Caution:** using `#[sealed_test]` instead of `#[test]` will create a temporary file
 //! and set it to be the test current directory but, nothing stops you from changing that directory
@@ -42,7 +42,7 @@
 //!    }
 //!```
 //!
-//! **with `sealed_test`** :
+//! ### With `sealed_test`
 //!
 //! Here each test has its own environment, the tests will always pass !
 //!
@@ -72,7 +72,7 @@
 //!
 //! ## Examples
 //!
-//! **The `env` attribute**
+//! ### The `env` attribute
 //!
 //! The `env` attribute allow to quickly set environment variable in your tests.
 //! This is only syntactic sugar and you can still normally manipulate environment variables with `std::env`.
@@ -96,7 +96,7 @@
 //! **Tip**: Sealed tests have their own environment and variable from the parent
 //! won't be affected by whatever you do with the test environment.
 //!
-//! **The `files` attribute:**
+//! ### The `files` attribute
 //!
 //! If you need test behaviors that mutate the file system, you can use the `files`
 //! attribute to quickly copy files from your crate root to the test working directory.
@@ -115,13 +115,13 @@
 //! # }
 //! ```
 //!
-//! **setup and teardown:**
+//! ### Setup and teardown
 //!
-//! Sealed test provides two kinds of setup and teardown attribute :
-//! - `before` and `after`: to run a expression around your tests, typically a function, for instance `setup = setup_function()`.
-//! - `cmd_before` and `cmd_after` to run a  shell-script like tasks, typically a function, see the examples below.
+//! Sealed test provides two kinds of setup and teardown attributes :
+//! - `before` and `after`: to run a rust expression around your tests, typically a function, for instance `setup = setup_function()`.
+//! - `cmd_before` and `cmd_after` to run a  shell-script like tasks, see the examples below.
 //!
-//! `before and after`
+//! #### `before` and `after`
 //! ```rust
 //! # fn main() {
 //!
@@ -141,7 +141,7 @@
 //! }
 //! # }
 //!```
-//! `cmd_before` and `cmd_after`:
+//! #### cmd_before` and `cmd_after`
 //!
 //! ```rust
 //! # fn main() {
