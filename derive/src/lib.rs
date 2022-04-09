@@ -17,11 +17,9 @@ pub fn sealed_test(attr: TokenStream, item: TokenStream) -> TokenStream {
     let test_fn = SealedTest::new()
         .with_files(args.files)
         .with_env(args.env)
-        .with_cmd_before(args.cmd_before)
         .with_expr(args.before)
         .with_test(input)
         .with_expr(args.after)
-        .with_cmd_before(args.cmd_after)
         .build();
 
     input_fn.block.stmts = test_fn;

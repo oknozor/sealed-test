@@ -1,6 +1,5 @@
-use syn::__private::TokenStream2;
 use syn::{
-    braced, bracketed, parenthesized,
+    bracketed, parenthesized,
     parse::{Parse, ParseStream},
     Expr, LitStr, Token,
 };
@@ -10,8 +9,6 @@ pub struct SealedTestAttributes {
     pub env: Vec<EnvVar>,
     pub before: Option<Expr>,
     pub after: Option<Expr>,
-    pub cmd_before: Option<TokenStream2>,
-    pub cmd_after: Option<TokenStream2>,
 }
 
 pub struct EnvVar {
@@ -37,8 +34,6 @@ impl Parse for SealedTestAttributes {
             env: vec![],
             before: None,
             after: None,
-            cmd_before: None,
-            cmd_after: None,
         };
 
         while let Ok(ident) = input.parse::<syn::Ident>() {
@@ -49,8 +44,6 @@ impl Parse for SealedTestAttributes {
                 "env" => attributes.env = Self::parse_env(input)?,
                 "before" => attributes.before = Some(input.parse::<Expr>()?),
                 "after" => attributes.after = Some(input.parse::<Expr>()?),
-                "cmd_before" => attributes.cmd_before = Some(Self::parse_cmd(input)?),
-                "cmd_after" => attributes.cmd_after = Some(Self::parse_cmd(input)?),
                 other => panic!(
                     "unexpected attribute {}, use 'files', 'env', 'setup' or 'teardown'",
                     other
@@ -101,12 +94,5 @@ impl SealedTestAttributes {
         }
 
         Ok(env_vars)
-    }
-
-    fn parse_cmd(input: ParseStream) -> syn::Result<TokenStream2> {
-        let content;
-        braced!(content in input);
-        let cmds = content.parse::<TokenStream2>()?;
-        Ok(cmds)
     }
 }

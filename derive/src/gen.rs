@@ -1,6 +1,5 @@
 use crate::attributes::EnvVar;
 use std::path::PathBuf;
-use syn::__private::TokenStream2;
 use syn::{parse_quote, Expr, Stmt};
 
 pub struct SealedTest {
@@ -26,15 +25,6 @@ impl SealedTest {
         if let Some(expr) = expr {
             self.stmt.push(parse_quote!(
                 #expr;
-            ));
-        }
-        self
-    }
-
-    pub fn with_cmd_before(mut self, expr: Option<TokenStream2>) -> Self {
-        if let Some(expr) = expr {
-            self.stmt.push(parse_quote!(
-                cmd_lib::run_cmd!{#expr}.expect("Failed to run cmd");
             ));
         }
         self
