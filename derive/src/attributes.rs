@@ -68,9 +68,7 @@ impl SealedTestAttributes {
 
         while let Ok(file) = content.parse::<LitStr>() {
             files.push(file.value());
-            if !content.peek(Token!(,)) && !content.is_empty() {
-                content.parse::<Token!(,)>()?;
-            } else if !content.is_empty() {
+            if !content.is_empty() {
                 content.parse::<Token!(,)>()?;
             }
         }
@@ -86,9 +84,7 @@ impl SealedTestAttributes {
 
         while let Ok(env_var) = content.parse::<EnvVar>() {
             env_vars.push(env_var);
-            if !content.peek(Token!(,)) && !content.is_empty() {
-                content.parse::<Token!(,)>()?;
-            } else if !content.is_empty() {
+            if !content.is_empty() {
                 content.parse::<Token!(,)>()?;
             }
         }
