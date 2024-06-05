@@ -137,6 +137,7 @@
 //! }
 //! # }
 //!```
+#![allow(clippy::test_attr_in_doctest)]
 extern crate sealed_test_derive;
 
 pub mod prelude;
