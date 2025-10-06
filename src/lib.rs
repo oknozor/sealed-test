@@ -155,7 +155,7 @@ mod tests {
     fn a_dummy_test_with_git() {
         let current_dir = std::env::current_dir().unwrap();
         run_cmd! (
-            info "Initializing test repo in $current_dir";
+            info "Initializing test repo in ${current_dir:?}";
             git init;
             git commit -m c1 --allow-empty;
             git commit -m c2 --allow-empty;
@@ -190,7 +190,7 @@ mod tests {
     fn another_dummy_test_with_git() {
         let current_dir = std::env::current_dir().unwrap();
         run_cmd! (
-            info "Initializing test repo in $current_dir";
+            info "Initializing test repo in ${current_dir:?}";
             git init;
             git commit -m "a commit" --allow-empty;
             git checkout -b branch1;
@@ -205,7 +205,7 @@ mod tests {
     fn a_dummy_test_with_return_type() -> Result<&'static str, &'static str> {
         let current_dir = std::env::current_dir().unwrap();
         run_cmd! (
-            info "Initializing test repo in $current_dir";
+            info "Initializing test repo in ${current_dir:?}";
             git init;
             git commit -m "a commit" --allow-empty;
             git checkout -b branch1;
